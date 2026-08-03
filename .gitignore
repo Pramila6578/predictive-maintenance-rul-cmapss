@@ -1,0 +1,14 @@
+# Data files (large, don't push raw dataset to GitHub)
+NASA Dataset/
+*.txt
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# OS files
+.DS_Store
+Thumbs.db
