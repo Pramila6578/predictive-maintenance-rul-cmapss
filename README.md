@@ -2,6 +2,8 @@
 
 Predicting how many operating cycles remain before a turbofan jet engine fails, using NASA's C-MAPSS turbofan degradation dataset (FD001).
 
+🔗 **Live demo:** https://predictive-maintenance-rul-cmapss-ctbz3hqw6bkl37vpm7cbd6.streamlit.app/
+
 ## Problem Statement
 Aircraft and industrial equipment degrade gradually during operation. Instead of waiting for failure or maintaining on a fixed calendar schedule, this project builds a Machine Learning model that estimates **Remaining Useful Life (RUL)** — the number of operating cycles left before failure — directly from sensor readings.
 
