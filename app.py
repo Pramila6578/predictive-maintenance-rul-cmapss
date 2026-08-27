@@ -146,7 +146,7 @@ with tab_fleet:
 
     snapshot_pct = st.slider(
         "Simulate fleet at what % of each engine's recorded life?",
-        min_value=10, max_value=100, value=80, step=5,
+        min_value=10, max_value=100, value=80, step=1,
         help="100% = each engine's actual failure point (all will show Critical, since RUL=0 by definition there).",
     )
 
