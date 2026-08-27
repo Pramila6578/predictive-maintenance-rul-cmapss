@@ -25,6 +25,12 @@ st.set_page_config(
 
 DATA_PATH = "train_FD001.txt"
 
+# Consistent brand palette across all charts (matches the navy/steel-blue resume branding)
+NAVY = "#1a3c5e"
+STEEL_BLUE = "#5b8ba8"
+LIGHT_BLUE = "#8ca6b8"
+STATUS_COLORS = {"🔴 Critical": "#d62728", "🟡 Warning": "#f0a500", "🟢 Healthy": "#2ca02c"}
+
 LOW_VARIANCE_SENSORS = ["sensor_1", "sensor_5", "sensor_6", "sensor_10",
                          "sensor_16", "sensor_18", "sensor_19"]
 
@@ -166,7 +172,7 @@ with tab_fleet:
     fig = px.bar(
         latest.sort_values("predicted_RUL"),
         x="engine_id", y="predicted_RUL", color="status",
-        color_discrete_map={"🔴 Critical": "#d62728", "🟡 Warning": "#ff9800", "🟢 Healthy": "#2ca02c"},
+        color_discrete_map=STATUS_COLORS,
         title="Predicted Remaining Useful Life by engine (most recent cycle)",
         labels={"predicted_RUL": "Predicted RUL (cycles)", "engine_id": "Engine ID"},
     )
@@ -250,8 +256,8 @@ with tab_engine:
     engine_df["predicted_RUL_curve"] = artifacts["rf_model"].predict(engine_X_scaled)
 
     fig_curve = go.Figure()
-    fig_curve.add_trace(go.Scatter(x=engine_df["cycle"], y=engine_df["RUL"], mode="lines", name="Actual RUL"))
-    fig_curve.add_trace(go.Scatter(x=engine_df["cycle"], y=engine_df["predicted_RUL_curve"], mode="lines", name="Predicted RUL"))
+    fig_curve.add_trace(go.Scatter(x=engine_df["cycle"], y=engine_df["RUL"], mode="lines", name="Actual RUL", line=dict(color=NAVY)))
+    fig_curve.add_trace(go.Scatter(x=engine_df["cycle"], y=engine_df["predicted_RUL_curve"], mode="lines", name="Predicted RUL", line=dict(color=STEEL_BLUE, dash="dot")))
     fig_curve.add_vline(x=selected_cycle, line_dash="dash", line_color="gray")
     fig_curve.update_layout(title="Actual vs. predicted RUL over engine lifetime", xaxis_title="Cycle", yaxis_title="RUL (cycles)")
     st.plotly_chart(fig_curve, use_container_width=True)
@@ -266,17 +272,18 @@ with tab_model:
 
     fig_bar = px.bar(artifacts["metrics"], x="Model", y="RMSE", color="Model",
                       title="Model Comparison — RMSE (lower is better)",
-                      color_discrete_sequence=["#8ca6b8", "#1a3c5e"])
+                      color_discrete_sequence=[LIGHT_BLUE, NAVY])
     st.plotly_chart(fig_bar, use_container_width=True)
 
     st.subheader("Predicted vs. actual RUL (test set, Random Forest)")
     scatter_df = pd.DataFrame({"actual": artifacts["y_test"], "predicted": artifacts["y_pred_rf"]})
-    fig_scatter = px.scatter(scatter_df, x="actual", y="predicted", opacity=0.3,
-                              title="Random Forest: Predicted vs Actual RUL")
+    fig_scatter = px.scatter(scatter_df, x="actual", y="predicted", opacity=0.35,
+                              title="Random Forest: Predicted vs Actual RUL",
+                              color_discrete_sequence=[STEEL_BLUE])
     fig_scatter.add_trace(go.Scatter(
         x=[scatter_df["actual"].min(), scatter_df["actual"].max()],
         y=[scatter_df["actual"].min(), scatter_df["actual"].max()],
-        mode="lines", name="Perfect prediction", line=dict(dash="dash", color="red"),
+        mode="lines", name="Perfect prediction", line=dict(dash="dash", color="#d62728"),
     ))
     st.plotly_chart(fig_scatter, use_container_width=True)
 
@@ -284,7 +291,8 @@ with tab_model:
     top_features = artifacts["importances"].head(10).reset_index()
     top_features.columns = ["feature", "importance"]
     fig_importance = px.bar(top_features.sort_values("importance"), x="importance", y="feature",
-                             orientation="h", title="Top 10 Most Important Features")
+                             orientation="h", title="Top 10 Most Important Features",
+                             color_discrete_sequence=[NAVY])
     st.plotly_chart(fig_importance, use_container_width=True)
 
 st.markdown("---")
