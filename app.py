@@ -128,6 +128,7 @@ st.caption(
     "Predicting Remaining Useful Life (RUL) on NASA's C-MAPSS FD001 dataset — "
     "Random Forest vs. Linear Regression. Built on top of the original notebook analysis."
 )
+st.markdown("**Built by Chaitanya Naga Pramila R**")
 
 tab_fleet, tab_engine, tab_model = st.tabs(["Fleet Overview", "Engine Inspector", "Model Performance"])
 
